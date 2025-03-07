@@ -1,3 +1,4 @@
+library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
@@ -15,7 +16,7 @@ architecture tb of hexcode_tb is
   signal stop: std_logic;
 begin
 
-  uut: entity work.Lab0 port map(LEDR => leds, SW => sw, HEX5 => hex, KEY => keys);
+  uut: entity work.hexcode port map(LEDR => leds, SW => sw, HEX5 => hex, KEY => keys);
   
   clock <= not clock after 5 ns when stop = '0' else '0';
   stop <= '1' when sw = (sw'range => '1') and keys = (keys'range => '1') else '0';
@@ -28,4 +29,3 @@ begin
     end if;
   end process;
 end architecture tb;
-Copy

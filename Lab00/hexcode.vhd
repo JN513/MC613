@@ -40,4 +40,4 @@ begin
       "1111111" when others;
 
 end architecture bhv;
-Copy
+	

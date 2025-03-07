@@ -4,3 +4,7 @@ qdb/
 tmp-clearbox/
 db/
 incremental_db/
+simulation/
+output_files/
+*.bak
+*.rpt
