@@ -1,8 +1,8 @@
--- Aos Switchs, leds, display de 7 segmentos e os botoes
--- 
--- O codigo em 7 segmentos de um digito em hexadecimal
--- LEDR tera os mesmo valor de SW , ja HEX5 tera um valor com base na saida do decodificador implementado
--- ao ligar um switch o led de mesmo numero devera ser acesso, e ao apertar os botoes o valor em hex sera mostrado em um display de 7 segmentos
+-- 1) Aos Switchs, leds, display de 7 segmentos e os botoes
+-- 2) Declarando desta forma o bit 0 se torna o mais significativo, e o bit 6 o menos  significativo, assim invertendo a ordem dos bits ao atribuir um valor
+-- 3) O codigo em 7 segmentos de um digito em hexadecimal
+-- 4) LEDR tera os mesmo valor de SW , ja HEX5 tera um valor com base na saida do decodificador implementado
+-- 5) Ao ligar um switch o led de mesmo numero devera ser acesso, e ao apertar os botoes o valor em hex sera mostrado em um display de 7 segmentos
 library ieee;
 use ieee.std_logic_1164.all;
 

@@ -1,4 +1,4 @@
-all: .env
+all:
 	quartus_sh --flow compile Lab00
 	
 load:
