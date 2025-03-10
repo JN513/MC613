@@ -1,0 +1,7 @@
+1) Sim
+2) Sim
+3) Seria necessario ter os valores esperados das saidas para cada entrada e realizar asserts das saidas em relação as entradas
+3) Poderia ser implementado uma "variavel" que para cada assert falho e inclementada em uma unidade
+4) Creio que para analise de forma de onda não tenha meios muito mais eficientes de avaliar os valores do sinais, principalmente do hex5 pois cada bit representa um segmento do display
+e isso não possui uma conexão direta facilmente visivel com o numero, mas abrir o valor de hex e analizar bit a bit pode dar uma visão mais palpavel de segmentos do display estão sendo ativados,
+visualizar essa saida no display real na fpga pode dar uma visão melhor do comportamento do que simplemente ver um monte de bits e valores em hexadecimal.
