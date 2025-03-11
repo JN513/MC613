@@ -19,14 +19,14 @@
 #
 # Quartus Prime
 # Version 23.1std.1 Build 993 05/14/2024 SC Lite Edition
-# Date created = 15:46:44  March 10, 2025
+# Date created = 15:42:34  March 10, 2025
 #
 # -------------------------------------------------------------------------- #
 #
 # Notes:
 #
 # 1) The default values for assignments are stored in the file:
-#		Lab02_assignment_defaults.qdf
+#		Lab01_assignment_defaults.qdf
 #    If this file doesn't exist, see file:
 #		assignment_defaults.qdf
 #
@@ -39,9 +39,9 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSEMA5F31C6
-set_global_assignment -name TOP_LEVEL_ENTITY alu_board
+set_global_assignment -name TOP_LEVEL_ENTITY Lab01
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
-set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:46:44  MARCH 10, 2025"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:42:34  MARCH 10, 2025"
 set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.1 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name BOARD "DE1-SoC Board"
@@ -52,11 +52,10 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
-set_global_assignment -name VERILOG_FILE alu_board.v
-set_global_assignment -name VERILOG_FILE alu.v
-set_global_assignment -name VERILOG_FILE bin2hex.v
-set_global_assignment -name VERILOG_FILE bin2dec.v
-set_global_assignment -name VERILOG_FILE two_comp_to_7seg.v
+set_global_assignment -name VERILOG_FILE Lab01.v
+set_global_assignment -name VERILOG_FILE ledshift.v
+set_global_assignment -name VERILOG_FILE key2dec.v
+set_global_assignment -name VERILOG_FILE swxor.v
 set_location_assignment PIN_AJ4 -to ADC_CS_N
 set_location_assignment PIN_AK4 -to ADC_DIN
 set_location_assignment PIN_AK3 -to ADC_DOUT

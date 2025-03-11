@@ -1,6 +1,6 @@
 module key2dec (
     input wire [3:0] KEY,
-    output reg [6:0] HEX0
+    output reg [0:6] HEX0
 );
 
 wire [3:0] KEY_not;

@@ -1,4 +1,4 @@
-module ALu (
+module Alu (
     input wire [31:0] A,
     input wire [31:0] B,
     input wire [1:0]  ALUCtl,

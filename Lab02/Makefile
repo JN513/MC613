@@ -12,9 +12,17 @@ clean:
 	rm -rf *.o
 	rm -rf *.vcd
 
-sim:
-	ghdl -a -fsynopsys --std=08 hexcode.vhd hexcode_tb.vhd
-	ghdl -e -fsynopsys --std=08 hexcode_tb
-	ghdl -r -fsynopsys --std=08 hexcode_tb --vcd=hexcode.vcd
+sim_alu: buildFolder
+	iverilog -o build/sim_alu -s alu_tb alu_tb.v alu.v
+	vvp build/sim_alu
 
+sim_hex: buildFolder
+	iverilog -o build/sim_hex -s bin2hex_tb bin2hex_tb.v bin2hex.v
+	vvp build/sim_hex
 
+sim_dec: buildFolder
+	iverilog -o build/sim_dec -s bin2dec_tb bin2dec_tb.v bin2dec.v
+	vvp build/sim_dec
+
+buildFolder:
+	mkdir -p build

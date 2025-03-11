@@ -6,23 +6,43 @@ module ledshift #(
     output wire [9:0] LEDR
 );
 
-localparam DEBOUNCE_CICLES = CLK_FREQ / 4;
+localparam DEBOUNCE_CICLES = CLK_FREQ / 8;
 
+
+wire posedge_btn1, posedge_btn2;
+reg btn_pressed1, btn_pressed2;
+reg [2:0] posedge_reg1, posedge_reg2;
 reg [9:0] led_reg;
 
 initial begin
-    counter_1_debounce <= 32'h0;
-    counter_2_debounce <= 32'h0;
-    led_reg            <= 10'b0000100000;
+    counter_1_debounce = 32'h0;
+    counter_2_debounce = 32'h0;
+    led_reg            = 10'b0000100000;
+    posedge_reg1       = 3'b000;
+    posedge_reg2       = 3'b000;
 end
 
 always @(posedge CLOCK_50 ) begin
+    btn_pressed1 <= 1'b0;
+    btn_pressed2 <= 1'b0;
+
+    posedge_reg1 <= {posedge_reg1[1:0], btn_pressed1};
+    posedge_reg2 <= {posedge_reg2[1:0], btn_pressed2};
+
     if(counter_1_debounce >= DEBOUNCE_CICLES) begin
-        led_reg <= {led_reg[0], led_reg[9:1]};
+        btn_pressed1 <= 1'b1;
     end
 
     if(counter_2_debounce >= DEBOUNCE_CICLES) begin
-        led_reg <= {led_reg[8:0], led_reg[9]};
+        btn_pressed2 <= 1'b1;
+    end
+
+    if(posedge_btn1) begin
+        led_reg <= led_reg >> 1'b1;
+    end
+
+    if(posedge_btn2) begin
+        led_reg <= led_reg << 1'b1;
     end
 end
 
@@ -40,16 +60,11 @@ always @(posedge CLOCK_50 ) begin
     end else begin
         counter_2_debounce <= 32'h0;
     end
-
-    if(counter_1_debounce >= DEBOUNCE_CICLES) begin
-        counter_1_debounce <= 32'h0;
-    end
-
-    if(counter_2_debounce >= DEBOUNCE_CICLES) begin
-        counter_2_debounce <= 32'h0;
-    end
 end
 
-assign LEDR = ~led_reg;
+assign posedge_btn1 = ~posedge_reg1[2] & posedge_reg1[1];
+assign posedge_btn2 = ~posedge_reg2[2] & posedge_reg2[1];
+
+assign LEDR = led_reg;
 
 endmodule
