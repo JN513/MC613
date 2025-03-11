@@ -4,7 +4,7 @@ module swxor_tb ();
 wire [9:0] LEDR;
 reg  [9:0] SW;
 
-SwXor U1 (
+swxor U1 (
     .SW (SW),
     .LEDR(LEDR)
 );
@@ -12,7 +12,7 @@ SwXor U1 (
 integer i;
 
 initial begin
-    $dumpfile("swxor_tb.vcd");
+    $dumpfile("build/swxor_tb.vcd");
     $dumpvars(0, swxor_tb);
 
     SW = 10'b0000000000;

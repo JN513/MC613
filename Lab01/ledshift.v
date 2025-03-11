@@ -1,9 +1,9 @@
 module ledshift #(
     parameter CLK_FREQ = 50_000_000
 ) (
-    input wire CLOCK_50,
-    input wire [3:0] KEY,
-    output reg [9:0] LEDR
+    input  wire CLOCK_50,
+    input  wire [3:0] KEY,
+    output wire [9:0] LEDR
 );
 
 localparam DEBOUNCE_CICLES = CLK_FREQ / 4;
@@ -16,7 +16,7 @@ initial begin
     led_reg            <= 10'b0000100000;
 end
 
-always @(posedge clk ) begin
+always @(posedge CLOCK_50 ) begin
     if(counter_1_debounce >= DEBOUNCE_CICLES) begin
         led_reg <= {led_reg[0], led_reg[9:1]};
     end
@@ -28,7 +28,7 @@ end
 
 reg [31:0] counter_1_debounce, counter_2_debounce;
 
-always @(posedge clk ) begin
+always @(posedge CLOCK_50 ) begin
     if(!KEY[0]) begin
         counter_1_debounce <= counter_1_debounce + 1'b1;
     end else begin

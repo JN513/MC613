@@ -11,7 +11,7 @@ key2dec U1 (
 integer i;
 
 initial begin
-    $dumpfile("key2dec_tb.vcd");
+    $dumpfile("build/key2dec_tb.vcd");
     $dumpvars(0, key2dec_tb);
 
     KEY = 4'b0000;

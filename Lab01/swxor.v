@@ -1,4 +1,4 @@
-module SwXor (
+module swxor (
     input  wire [9:0] SW,
     output wire [9:0] LEDR
 );
