@@ -37,11 +37,11 @@ always @(posedge CLOCK_50 ) begin
         btn_pressed2 <= 1'b1;
     end
 
-    if(posedge_btn1) begin
+    if(posedge_btn1 && !led_reg[0]) begin
         led_reg <= led_reg >> 1'b1;
     end
 
-    if(posedge_btn2) begin
+    if(posedge_btn2 && !led_reg[9]) begin
         led_reg <= led_reg << 1'b1;
     end
 end

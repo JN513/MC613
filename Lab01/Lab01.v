@@ -6,7 +6,7 @@ module Lab01 (
     output wire [0:6] HEX0
 );
 
-`define LEDSHIFT 1
+//`define LEDSHIFT 1
 
 `ifdef  KEY2DEC
 
