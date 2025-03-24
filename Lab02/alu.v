@@ -15,7 +15,7 @@ localparam ADD = 2 'b10;
 localparam SUB = 2 'b11;
 
 assign Zero = ~|R;
-assign Overflow = (A[31] & B[31] & ~R[31]) | (~A[31] & ~B[31] & R[31]);
+assign overflow = ((A[31] == B[31]) && (A[31] != R[31]));
 assign Cout = (ALUCtl == ADD) ? (R[31] & B[31]) : 1'b0;
 
 always @(*) begin
