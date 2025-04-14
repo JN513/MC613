@@ -12,9 +12,11 @@ clean:
 	rm -rf *.o
 	rm -rf *.vcd
 
-sim:
-	ghdl -a -fsynopsys --std=08 hexcode.vhd hexcode_tb.vhd
-	ghdl -e -fsynopsys --std=08 hexcode_tb
-	ghdl -r -fsynopsys --std=08 hexcode_tb --vcd=hexcode.vcd
+buildFolder:
+	mkdir -p build
+
+sim: buildFolder
+	iverilog -o build/sim -s multiplier_tb -g2012 multiplier_tb.v multiplier.v
+	vvp build/sim
 
 

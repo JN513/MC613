@@ -1,0 +1,27 @@
+// Sinclone
+
+; Estimate of Logic utilization (ALMs needed) ; 35             ;
+;                                             ;                ;
+; Combinational ALUT usage for logic          ; 59             ;
+;     -- 7 input functions                    ; 0              ;
+;     -- 6 input functions                    ; 2              ;
+;     -- 5 input functions                    ; 2              ;
+;     -- 4 input functions                    ; 38             ;
+;     -- <=3 input functions                  ; 17             ;
+;                                             ;                ;
+; Dedicated logic registers                   ; 32    
+
+// Single cicle
+
+; Estimate of Logic utilization (ALMs needed) ; 20             ;
+;                                             ;                ;
+; Combinational ALUT usage for logic          ; 35             ;
+;     -- 7 input functions                    ; 0              ;
+;     -- 6 input functions                    ; 0              ;
+;     -- 5 input functions                    ; 0              ;
+;     -- 4 input functions                    ; 28             ;
+;     -- <=3 input functions                  ; 7              ;
+;                                             ;                ;
+; Dedicated logic registers                   ; 14             ;
+;                                             ;                ;
+; I/O pins                                    ; 60    
