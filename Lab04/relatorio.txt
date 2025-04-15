@@ -25,3 +25,5 @@
 ; Dedicated logic registers                   ; 14             ;
 ;                                             ;                ;
 ; I/O pins                                    ; 60    
+
+Devido ao N pequeno e ao fato de a FPGA possuir blocos ALM com multiplicadores embutidos, como esperado a versão ciclo unico (a*b) ficou menor.

@@ -1,4 +1,4 @@
-`define SINGLE_CYCLE 1
+//`define SINGLE_CYCLE 1
 module multiplier_board (
     input  wire CLOCK_50,
     input  wire [9:0] SW,
