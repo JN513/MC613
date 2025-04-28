@@ -39,17 +39,17 @@ UART_RX #(
     .BAUD_RATE       (BIT_RATE),
     .CLK_FREQ        (CLK_FREQ)
 ) uart_rx (
-    .clk             (clk),
-    .rst_n           (rst_n),
+    .clk                  (clk),
+    .rst_n                (rst_n),
 
-    .wr_bit_period_i (1'b0),
-    .bit_period_i    (CLK_FREQ / BIT_RATE - 1),
+    .wr_bit_period_i      (1'b0),
+    .bit_period_i         (CLK_FREQ / BIT_RATE - 1),
 
-    .uart_rxd        (rx),
-    .uart_rx_en      (1'b1),
-    .uart_rx_valid   (uart_rx_valid),
-    .uart_rx_data    (uart_rx_data),
-    .uart_rx_parity_error (parity_error),
+    .uart_rxd             (rx),
+    .uart_rx_en           (1'b1),
+    .uart_rx_valid        (uart_rx_valid),
+    .uart_rx_data         (uart_rx_data),
+    .uart_rx_parity_error (parity_error)
 );
 
 endmodule

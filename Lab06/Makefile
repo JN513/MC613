@@ -13,10 +13,17 @@ clean:
 	rm -rf *.vcd
 
 
-sim: buildFolder
-	iverilog -o build/sim_fsm -s fsm_tb fsm_tb.v fsm.v
-	vvp build/sim_fsm
+sim_rx: buildFolder
+	iverilog -o build/uart_rx_tb -s uart_rx_tb -g2012  uart_rx.sv uart_rx_tb.sv
+	vvp build/uart_rx_tb
 
+sim_tx: buildFolder
+	iverilog -o build/uart_tx_tb -s uart_tx_tb -g2012  uart_tx.sv uart_tx_tb.sv
+	vvp build/uart_tx_tb
+
+sim_uart: buildFolder
+	iverilog -o build/uart_tb -s uart_tb -g2012  uart.sv uart_tb.sv uart_tx.sv uart_rx.sv
+	vvp build/uart_tb
 
 buildFolder:
 	mkdir -p build

@@ -83,7 +83,7 @@ always_ff @(posedge clk) begin : UART_RX_FSM
                     counter <= bit_period;
                     if (uart_rxd != parity_bit) begin
                         uart_rx_parity_error  <= 1'b1; // Erro de paridade
-                        uart_rx_valid         <= 1'b1; // Erro de paridade
+                        uart_rx_valid         <= 1'b0; // Erro de paridade
                     end else begin
                         uart_rx_valid         <= 1'b1; // Dados válidos
                         uart_rx_parity_error  <= 1'b0; // Reseta o erro de paridade
