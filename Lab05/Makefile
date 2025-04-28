@@ -1,8 +1,8 @@
 all:
-	quartus_sh --flow compile Lab05
+	quartus_sh --flow compile lab05
 	
 load:
-	quartus_pgm -m jtag -c "DE-SoC " -o "p;output_files/Lab05.sof@2"
+	quartus_pgm -m jtag -c "DE-SoC " -o "p;output_files/lab05.sof@2"
 
 clean:
 	rm -rf build/*
@@ -12,9 +12,14 @@ clean:
 	rm -rf *.o
 	rm -rf *.vcd
 
-sim:
-	ghdl -a -fsynopsys --std=08 hexcode.vhd hexcode_tb.vhd
-	ghdl -e -fsynopsys --std=08 hexcode_tb
-	ghdl -r -fsynopsys --std=08 hexcode_tb --vcd=hexcode.vcd
 
+sim_time: buildFolder
+	iverilog -o build/sim_time -s tb_Time time_tb.v time.v bin_to_bcd_7seg.v
+	vvp build/sim_time
 
+sim_stop: buildFolder
+	iverilog -o build/sim_stop -s tb_StopWatch stopwatch_tb.v stopwatch.v bin_to_bcd_7seg.v
+	vvp build/sim_stop
+
+buildFolder:
+	mkdir -p build

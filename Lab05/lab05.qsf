@@ -39,7 +39,7 @@
 
 set_global_assignment -name FAMILY "Cyclone V"
 set_global_assignment -name DEVICE 5CSEMA5F31C6
-set_global_assignment -name TOP_LEVEL_ENTITY lab05
+set_global_assignment -name TOP_LEVEL_ENTITY Clock
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 23.1STD.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:31:28  APRIL 06, 2025"
 set_global_assignment -name LAST_QUARTUS_VERSION "23.1std.1 Lite Edition"
@@ -52,6 +52,10 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
+set_global_assignment -name VERILOG_FILE stopwatch.v
+set_global_assignment -name VERILOG_FILE bin_to_bcd_7seg.v
+set_global_assignment -name VERILOG_FILE clock.v
+set_global_assignment -name VERILOG_FILE time.v
 set_location_assignment PIN_AJ4 -to ADC_CS_N
 set_location_assignment PIN_AK4 -to ADC_DIN
 set_location_assignment PIN_AK3 -to ADC_DOUT

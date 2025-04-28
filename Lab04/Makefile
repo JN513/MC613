@@ -19,4 +19,9 @@ sim: buildFolder
 	iverilog -o build/sim -s multiplier_tb -g2012 multiplier_tb.v multiplier.v
 	vvp build/sim
 
+sim: buildFolder
+	iverilog -o build/sim_fsm -s multiplier_tb multiplier_tb.v multiplier.v
+	vvp build/sim_fsm
 
+buildFolder:
+	mkdir -p build
