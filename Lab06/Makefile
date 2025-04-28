@@ -1,8 +1,8 @@
 all:
-	quartus_sh --flow compile Lab07
+	quartus_sh --flow compile Lab06
 	
 load:
-	quartus_pgm -m jtag -c "DE-SoC " -o "p;output_files/Lab07.sof@2"
+	quartus_pgm -m jtag -c "DE-SoC " -o "p;output_files/Lab06.sof@2"
 
 clean:
 	rm -rf build/*
