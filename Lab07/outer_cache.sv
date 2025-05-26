@@ -44,7 +44,7 @@ module OUTER_CACHE #(
 
     assign hit = read_request &&
                  cache_valid[addr[INDEX_BITS:2]] &&
-                 cache_tag[addr[INDEX_BITS:2]] == addr[31:INDEX_BITS+1];
+                 cache_tag[addr[INDEX_BITS:2]] == addr[ADDR_WIDTH-1:INDEX_BITS+1];
 
     always_ff @(posedge clk) begin : CACHE_LOGIC
         miss_finished <= 1'b0;

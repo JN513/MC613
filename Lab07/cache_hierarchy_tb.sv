@@ -146,8 +146,8 @@ module cache_hierarchy_tb();
         #20;
         proc_addr = 16'h0010;
         proc_read_request = 1;
-        #20; // wait for response
-        //wait (proc_response);
+        //#20; // wait for response
+        wait (proc_response);
         proc_read_request = 0;
         $display("Read 0x0010 again (L1 hit): %h", proc_read_data);
 
@@ -165,16 +165,16 @@ module cache_hierarchy_tb();
         proc_write_data = 32'hABCD1234;
         proc_write_request = 1;
         $display("Writing 0x0030 with data: %h", proc_write_data);
-        #20; // wait for response
-        //wait (proc_response);
+        //#20; // wait for response
+        wait (proc_response);
         proc_write_request = 0;
 
         // Read 0x0030 (should be hit in L1)
         #20;
         proc_addr = 16'h0030;
         proc_read_request = 1;
-        #20; // wait for response
-        //wait (proc_response);
+        //#20; // wait for response
+        wait (proc_response);
         proc_read_request = 0;
         $display("Read 0x0030 after write: %h", proc_read_data);
 
