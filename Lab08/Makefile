@@ -14,8 +14,8 @@ clean:
 
 
 sim: buildFolder
-	iverilog -o build/sim_fsm -s fsm_tb fsm_tb.v fsm.v
-	vvp build/sim_fsm
+	iverilog -o build/controller -s controller_tb controller_tb.sv controller.sv
+	vvp build/controller
 
 
 buildFolder:
