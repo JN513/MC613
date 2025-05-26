@@ -48,7 +48,7 @@ always_ff @(posedge clk or negedge rst_n) begin : UART_TX_FSM
                 uart_txd     <= 1'b1;
                 uart_tx_busy <= 1'b0; // Desativa busy no estado IDLE
                 if (uart_tx_en) begin
-                    parity_bit            <= ^uart_tx_data;
+                    parity_bit            <= ~(^uart_tx_data);
                     uart_tx_data_internal <= uart_tx_data;
                     counter      <= bit_period; // Usa bit_period atualizado
                     bit_index    <= 4'd0;

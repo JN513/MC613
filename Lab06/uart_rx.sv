@@ -57,7 +57,7 @@ always_ff @(posedge clk) begin : UART_RX_FSM
                 if (counter > 0) begin
                     counter <= counter - 1'b1;
                 end else begin
-                    counter <= bit_period - 5;
+                    counter <= bit_period - 2; // 5 for FPGA
                     state   <= RECEIVE;
                 end
             end
@@ -71,7 +71,7 @@ always_ff @(posedge clk) begin : UART_RX_FSM
                         bit_index <= bit_index + 1'b1;
                     end else begin
                         uart_rx_data  <= {uart_rxd, buffer[7:1]}; // Atualiza os dados recebidos
-                        parity_bit    <= ^{uart_rxd, buffer[7:1]}; // Calcula o bit de paridade
+                        parity_bit    <= ~(^{uart_rxd, buffer[7:1]}); // Calcula o bit de paridade
                         state         <= PARITY;
                     end
                 end
