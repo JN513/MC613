@@ -12,7 +12,7 @@ module INNER_CACHE #(
     parameter DATA_WIDTH   = 32,
     parameter ADDR_WIDTH   = 16,
     parameter TAG_WIDTH    = 10,
-    parameter OFFSET_WIDTH = 2,
+    parameter OFFSET_WIDTH = 2
 )(
     input logic clk,
     input logic rst_n,
@@ -24,7 +24,8 @@ module INNER_CACHE #(
     output logic [DATA_WIDTH-1:0] data_out,
     
     // Status signals
-    output logic hit
+    output logic hit,
+    output logic miss
 );
 
 
@@ -41,6 +42,7 @@ integer i;
 assign index    = addr[ADDR_WIDTH-1:OFFSET_WIDTH];
 assign hit      = valid[index] && (tags[index] == addr[ADDR_WIDTH-1:OFFSET_WIDTH + TAG_WIDTH]);
 assign data_out = cache_data[index];
+assign miss     = !hit;
 
 always_ff @( posedge clk ) begin : CACHE_LOGIC
     if(!rst_n) begin
@@ -48,7 +50,11 @@ always_ff @( posedge clk ) begin : CACHE_LOGIC
             valid[i] <= 1'b0;
         end
     end else begin
-        
+        if(write_enable) begin
+            cache_data[index] <= data_in;
+            tags[index] <= addr[ADDR_WIDTH-1:OFFSET_WIDTH + TAG_WIDTH];
+            valid[index] <= 1'b1;
+        end
     end
 end
 

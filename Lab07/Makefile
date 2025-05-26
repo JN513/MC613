@@ -13,9 +13,14 @@ clean:
 	rm -rf *.vcd
 
 
-sim: buildFolder
-	iverilog -o build/sim_fsm -s fsm_tb fsm_tb.v fsm.v
-	vvp build/sim_fsm
+sim_inner: buildFolder
+	iverilog -o build/sim_inner_cache -s cache_tb -g2012 cache_tb.sv inner_cache.sv
+	vvp build/sim_inner_cache
+
+sim_outer: buildFolder
+	iverilog -o build/cache_hierarchy_tb -s cache_hierarchy_tb -g2012 cache_hierarchy_tb.sv outer_cache.sv
+	vvp build/cache_hierarchy_tb
+.PHONY: all load clean sim_inner sim_outer
 
 
 buildFolder:

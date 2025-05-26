@@ -1,5 +1,5 @@
 module UART_BOARD #(
-    parameter BIT_RATE = 115200,  // Baud rate
+    parameter BIT_RATE = 9600,  // Baud rate
     parameter CLK_FREQ = 50000000 // Clock frequency
 ) (
     input  logic CLOCK_50,
@@ -31,7 +31,7 @@ logic [7:0] received_data;
 logic [23:0] uart_data;
 
 UART #(
-    .BIT_RATE (115200),  // Baud rate (pode ser alterado conforme necessário)
+    .BIT_RATE (9600),  // Baud rate (pode ser alterado conforme necessário)
     .CLK_FREQ (50000000) // Clock frequency (pode ser alterado conforme necessário)
 ) uart_inst (
     .clk           (clk),           // Porta de clock
