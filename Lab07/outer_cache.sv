@@ -1,5 +1,5 @@
 module OUTER_CACHE #(
-    parameter CACHE_SIZE = 32,
+    parameter CACHE_SIZE = 256,
     parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 16
 ) (

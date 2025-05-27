@@ -8,7 +8,6 @@ module cache_tb();
     localparam TAG_WIDTH    = 10;
     localparam OFFSET_WIDTH = 2;
 
-    // DUT interface
     logic clk;
     logic rst_n;
     logic [ADDR_WIDTH-1:0] addr;
@@ -18,10 +17,8 @@ module cache_tb();
     logic hit;
     logic miss;
 
-    // Clock generation
     always #5 clk = ~clk;
 
-    // DUT instantiation
     INNER_CACHE #(
         .DATA_WIDTH   (DATA_WIDTH),
         .ADDR_WIDTH   (ADDR_WIDTH),
@@ -38,13 +35,10 @@ module cache_tb();
         .miss         (miss)
     );
 
-    // Test procedure
     initial begin
-        // VCD
         $dumpfile("build/cache_tb.vcd");
         $dumpvars(0, cache_tb);
 
-        // Init
         clk = 0;
         rst_n = 0;
         addr = 0;

@@ -6,7 +6,7 @@ module cache_hierarchy_tb();
     localparam ADDR_WIDTH = 16;
     localparam DATA_WIDTH = 32;
     localparam CACHE_SIZE_L1 = 16;
-    localparam CACHE_SIZE_L2 = 32;
+    localparam CACHE_SIZE_L2 = 256;
 
     // Clock
     logic clk;
@@ -111,7 +111,7 @@ module cache_hierarchy_tb();
             end
             if (l2_mem_write_request) begin
                 main_memory[l2_mem_addr] <= l2_mem_write_data;
-                l2_mem_response <= 1; // write ack immediately for simplicity
+                l2_mem_response <= 1; 
             end
         end
     end
