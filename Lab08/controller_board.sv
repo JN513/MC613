@@ -24,81 +24,59 @@ module Controller_Board (
     output logic        DRAM_CS_N   // Chip select
 );
 
+localparam SYS_CLK_FREQ = 133_000_000;
+localparam TWO_SECONDS  = 2 * SYS_CLK_FREQ;
+
 logic sys_clk;
 logic rst_n;
 logic dram_dq_we;
 logic [15:0] dram_dq_out, dram_dq_in;
-
-
-initial begin
-	rst_n = 1;
-    write = 0;
-    read  = 0;
-end
-
-
-logic [31:0] write_data;
-logic [31:0] read_data;
-logic [31:0] addr;
-logic write, read, ack, busy, pass, fail;
-
+logic [9:0] sw_reg, leds_reg;
+logic read_btn, write_btn;
+logic [15:0] write_data;
+logic [15:0] read_data, read_data_reg;
+logic [24:0] addr;
+logic write, read, ack, busy;
+logic [23:0] display_data;
 logic [31:0] counter;
 
-logic w1, r1, rd;
+assign LEDR = leds_reg;
 
-assign LEDR = {pass, 2'b10,w1, 1'b0,r1,1'b0,rd, 1'b0 ,fail};
+initial begin
+    state      = INIT;
+    write_data = 32'h00000000;
+    addr       = 0;
+	rst_n      = 1;
+    write      = 0;
+    read       = 0;
+end
 
-typedef enum logic [2:0] { 
+typedef enum logic [3:0] { 
     INIT,
     DELAY,
-    WRITE,
-    DELAY_2,
+    IDLE,
     READ,
     READ_WB,
-    COMPAIR
+    READ_DISPLAY,
+    WRITE,
+    WRITE_OPERATION,
+    DELAY_2
 } state_t;
 
 state_t state;
 
-logic [1:0] stt;
-
-initial begin
-    state = INIT;
-    stt = 0;
-end
-
-always_ff @( posedge CLOCK_50 ) begin
-    case (stt)
-        0: begin
-            rst_n <= 0;
-            stt <= 1;
-        end
-        1: begin
-            rst_n <= 0;
-            stt <= 2;
-        end 
-        2: begin
-            rst_n <= 1;
-        end
-    endcase
-end
-
 always_ff @( posedge sys_clk ) begin
-    read <= 0;
+    read  <= 0;
     write <= 0;
 
     if(!rst_n) begin
-        state <= INIT;
+        leds_reg   <= 0;
+        state      <= INIT;
+        addr       <= 0;
+        write_data <= 32'h00000000;
     end else begin
         case (state)
             INIT: begin
-                w1 <=0;
-                r1 <= 0;
-                rd <= 0;
-                pass <= 0;
-                fail <= 0;
-                addr  <= 0;
-                write_data <= 32'h0000ABCD;
                 state <= DELAY;
             end
 
@@ -107,12 +85,55 @@ always_ff @( posedge sys_clk ) begin
                     counter <= counter + 1;
                 end else begin
                     counter <= 0;
+                    state   <= IDLE;
+                end
+            end
+
+            IDLE: begin
+                leds_reg  <= 10'h001;
+                if(write_btn) begin
+                    addr  <= {6'h0, sw_reg};
                     state <= WRITE;
+                end else if(read_btn) begin
+                    state <= READ;
+                    addr  <= {6'h0, sw_reg};
+                end
+            end
+
+            READ: begin
+                if(!busy) begin
+                    read <= 1;
+                    state <= READ_WB;
+                end
+            end
+
+            READ_WB: begin
+                if(ack) begin
+                    state   <= READ_DISPLAY;
+                    counter <= 0;
+                end
+            end
+
+            READ_DISPLAY: begin
+                leds_reg  <= 10'h002;
+                if(counter >= TWO_SECONDS) begin
+                    counter <= 0;
+                    state   <= IDLE;
+                end else begin
+                    counter <= counter + 1;
                 end
             end
 
             WRITE: begin
-                w1 <= 1;
+                leds_reg  <= 10'h004;
+                if(write_btn) begin
+                    write_data <= {6'h0, sw_reg};
+                    state      <= WRITE_OPERATION;
+                end
+            end
+
+            WRITE_OPERATION: begin
+                leds_reg  <= 10'h008;
                 if(!busy) begin
                     write <= 1;
                     state <= DELAY_2;
@@ -124,38 +145,12 @@ always_ff @( posedge sys_clk ) begin
                     counter <= counter + 1;
                 end else begin
                     counter <= 0;
-                    state <= READ;
+                    state   <= IDLE;
                 end
             end
-
-            READ: begin
-                r1 <= 0;
-                if(!busy) begin
-                    read <= 1;
-                    state <= READ_WB;
-                end
-            end
-
-            READ_WB: begin
-                if(ack) begin
-                    state <= COMPAIR;
-                end
-            end
-
-            COMPAIR: begin
-                rd <= 0;
-                if(read_data == write_data) begin
-                    pass <= 1;
-                    fail <= 0;
-                end else begin
-                    pass <= 0;
-                    fail <= 1;
-                end
-            end 
         endcase
     end
 end
-
 
 pll pll1 (
     .refclk   (CLOCK_50), // refclk.clk
@@ -164,8 +159,6 @@ pll pll1 (
 );
 
 Sdram_Ctrl #(
-    .DATA_WIDTH       (32),
-    .ADDR_WIDTH       (32),
     .MEM_SIZE         (1024 * 1024 * 64), // 64MB
     .SDRAM_CLK_FREQ   (133_000_000), // 100 MHz
     .SDRAM_WORD_SIZE  (16), // 16 bits per word
@@ -199,10 +192,97 @@ Sdram_Ctrl #(
     .dram_cas_n  (DRAM_CAS_N),
     .dram_ras_n  (DRAM_RAS_N),
     .dram_cs_n   (DRAM_CS_N),
-    .dram_dq_we  (dram_dq_we),
+    .dram_dq_we  (dram_dq_we)
 );
 
 assign dram_dq_in = DRAM_DQ;
 assign DRAM_DQ    = (dram_dq_we) ? dram_dq_out : 16'bz;
-    
+
+always_ff @( posedge sys_clk ) begin : DISPLAY_LOGIC
+    case (state)
+        IDLE :        display_data <= {14'h0, sw_reg};
+        WRITE:        display_data <= {14'h0, sw_reg};
+        READ_DISPLAY: display_data <= {8'h00, read_data};
+        default: display_data <= {14'h0, sw_reg};
+    endcase
+end
+
+bin2hex U1 (
+    .bin (display_data[3:0]),
+    .hex (HEX0)
+);
+bin2hex U2 (
+    .bin (display_data[7:4]),
+    .hex (HEX1)
+);
+bin2hex U3 (
+    .bin (display_data[11:8]),
+    .hex (HEX2)
+);
+bin2hex U4 (
+    .bin (display_data[15:12]),
+    .hex (HEX3)
+);
+bin2hex U5 (
+    .bin (display_data[19:16]),
+    .hex (HEX4)
+);
+bin2hex U6 (
+    .bin (display_data[23:20]),
+    .hex (HEX5)
+);
+
+// Reset logic
+
+logic btn_rst, auto_rst;
+logic [1:0] stt;
+
+always_ff @( posedge CLOCK_50 ) begin
+    case (stt)
+        0: begin
+            auto_rst <= 0;
+            stt      <= 1;
+        end
+        1: begin
+            auto_rst <= 0;
+            stt      <= 2;
+        end 
+        2: begin
+            auto_rst <= 1;
+        end
+    endcase
+end
+
+// Buttons boucing logic
+
+logic posedge_btn1, posedge_btn2, posedge_btn3, posedge_btn4;
+logic [2:0] posedge_reg1, posedge_reg2, posedge_reg3, posedge_reg4;
+
+initial begin
+    stt          = 0;
+	auto_rst     = 0;
+    posedge_reg1 = 0;
+    posedge_reg2 = 0;
+    posedge_reg3 = 0;
+    posedge_reg4 = 0;
+end
+
+always_ff @(posedge sys_clk ) begin   
+    posedge_reg1 <= {posedge_reg1[1:0], !KEY[0]};
+    posedge_reg2 <= {posedge_reg2[1:0], !KEY[1]};
+    posedge_reg3 <= {posedge_reg3[1:0], !KEY[2]};
+    posedge_reg4 <= {posedge_reg4[1:0], !KEY[3]};
+    sw_reg       <= SW;
+end
+
+assign posedge_btn1 = posedge_reg1[2:1] == 2'b01;
+assign posedge_btn2 = posedge_reg2[2:1] == 2'b01;
+assign posedge_btn3 = posedge_reg3[2:1] == 2'b01;
+assign posedge_btn4 = posedge_reg4[2:1] == 2'b01;
+
+assign btn_rst   = ~posedge_btn1;
+assign rst_n     = btn_rst & auto_rst;
+assign read_btn  = posedge_btn3;
+assign write_btn = posedge_btn4;
+
 endmodule

@@ -1,8 +1,6 @@
 module Sdram_Ctrl #(
-    parameter DATA_WIDTH       = 32,
-    parameter ADDR_WIDTH       = 32,
     parameter MEM_SIZE         = 1024 * 1024 * 64, // 64MB
-    parameter SDRAM_CLK_FREQ   = 100_000_000, // 100 MHz
+    parameter SDRAM_CLK_FREQ   = 133_000_000, // 100 MHz
     parameter SDRAM_WORD_SIZE  = 16, // 16 bits per word
     parameter SDRAM_COL_WIDTH  = 10, // Number of column
     parameter SDRAM_ROW_WIDTH  = 13, // Number of row
@@ -13,11 +11,11 @@ module Sdram_Ctrl #(
     input  logic sys_rst_n,
 
     // Processor interface
-    input  logic [ADDR_WIDTH-1:0] addr_i,
-    input  logic [DATA_WIDTH-1:0] data_i,
+    input  logic [24:0] addr_i,
+    input  logic [15:0] data_i,
     input  logic we_i, // Write enable
     input  logic re_i, // Read enable
-    output logic [DATA_WIDTH-1:0] data_o,
+    output logic [15:0] data_o,
     output logic ack_o, // Acknowledge signal
     output logic busy_o, // Busy signal
 
@@ -136,7 +134,7 @@ always_ff @( posedge sys_clk ) begin
             end
             ACTIVATE: begin
                 time_counter     <= 2; // 15 ns TRCD
-                current_state    <= IDLE;
+                current_state    <= WAIT_MEMORY;
                 state_after_wait <= (write_operation) ? WRITE : READ;
             end
 
@@ -147,8 +145,8 @@ always_ff @( posedge sys_clk ) begin
             end
 
             WRITE_ACK: begin
-                time_counter     <= 0;
-                current_state    <= IDLE;
+                time_counter  <= 0;
+                current_state <= IDLE;
             end
 
             READ: begin
@@ -158,7 +156,7 @@ always_ff @( posedge sys_clk ) begin
             end
 
             READ_WB: begin
-                time_counter     <= 2; // 15 ns TRP
+                time_counter    <= 2; // 15 ns TRP
                 if(read_counter < latency - 1) begin
                     read_counter <= read_counter + 1; // Increment read counter
                     current_state <= READ_WB; // Stay in READ_WB state until latency is met
@@ -190,6 +188,7 @@ always_ff @(posedge sys_clk) begin
     end else begin
         case (current_state)
             POWER_DOWN: begin
+                busy_o     <= 1;
                 command    <= DESL; // Device deselect
                 dram_cke   <= 0; // Clock enable low
                 dram_ldqm  <= 0; // Load mode register low
@@ -222,7 +221,7 @@ always_ff @(posedge sys_clk) begin
                 command         <= MRS; // Mode register set
                 dram_addr[12:0] <= MODE_REGISTER_MODE[12:0]; // Set mode register value
                 dram_ba         <= 2'b00;
-                busy_o          <= 1; // Busy during mode register set
+                busy_o          <= 1;
 
                 latency <= (MODE_REGISTER_MODE[6:4]) ? 2'b10 : 2'b11;
             end
@@ -233,6 +232,7 @@ always_ff @(posedge sys_clk) begin
                 dram_dq_we <= 0;   // Data write enable low
                 dram_ldqm  <= 0;   // Load mode register low
                 dram_udqm  <= 0;   // Data mask signals low
+                write_operation <= we_i;
             end
 
             AUTO_REFLESH: begin
