@@ -14,7 +14,7 @@ clean:
 
 
 sim: buildFolder
-	iverilog -o build/controller -s controller_tb controller_tb.sv controller.sv
+	iverilog -o build/controller -s controller_tb -g2012 controller_tb.sv controller.sv
 	vvp build/controller
 
 

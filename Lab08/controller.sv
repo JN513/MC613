@@ -227,6 +227,7 @@ always_ff @(negedge sys_clk or negedge sys_rst_n) begin
             end
 
             IDLE: begin
+                ack_o      <= 0;
                 command    <= NOP; // No operation
                 busy_o     <= 0;   // Not busy
                 dram_dq_we <= 0;   // Data write enable low
@@ -262,7 +263,7 @@ always_ff @(negedge sys_clk or negedge sys_rst_n) begin
                 busy_o     <= 0; // Not busy after write
                 dram_dq_we <= 0; // Data write enable low
             end
-
+read_data
             READ: begin
                 dram_dq_we     <= 0;
                 command        <= RD; // Read command

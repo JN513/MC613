@@ -1,29 +1,6 @@
 # Diagrama de estados
 
-```mermaid
-stateDiagram-v2
-    [*] --> POWER_DOWN
-    POWER_DOWN --> INITIALIZATION
-    INITIALIZATION --> PRECHARGE_INITIALIZATION: 13,297 cycles
-    PRECHARGE_INITIALIZATION --> AUTO_REFRESH_START: 2 cycles
-    AUTO_REFRESH_START --> AUTO_REFRESH_FINISH: 8 cycles
-    AUTO_REFRESH_FINISH --> MODE_REGISTER_SET: 8 cycles
-    MODE_REGISTER_SET --> IDLE: 8 cycles
-
-    IDLE --> AUTO_REFLESH: if refresh pending
-    AUTO_REFLESH --> IDLE: 8 cycles
-
-    IDLE --> ACTIVATE: on we_i || re_i
-    ACTIVATE --> WRITE: 2 cycles
-    ACTIVATE --> READ: 2 cycles
-
-    WRITE --> WRITE_ACK: 2 cycles
-    WRITE_ACK --> IDLE
-
-    READ --> READ_WB
-    READ_WB --> READ_WB: while latency not met
-    READ_WB --> IDLE: after latency
-```
+![Diagrama de estados](diagrama.svg)
 
 ## Definições
 
@@ -31,4 +8,20 @@ stateDiagram-v2
 - Periodo: ~7.5 Ns
 - CL: 2
 
-## Forma de onda esperada
+### Comandos
+
+SDRAM Commands [CS_N,RAS_N,CAS_N,WE_N]
+
+- DESL = 4'b1000;
+- NOP  = 4'b0111;
+- BST  = 4'b0110;
+- RD   = 4'b0101;
+- WRT  = 4'b0100;
+- ACT  = 4'b0011;
+- PRE  = 4'b0010;
+- REF  = 4'b0001;
+- MRS  = 4'b0000;
+
+## Forma de onda esperada para leitura e escrita
+
+![Forma de onda para leitura e escrita](wavedrom.svg)

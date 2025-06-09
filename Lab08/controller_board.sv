@@ -219,7 +219,7 @@ always_ff @( posedge sys_clk ) begin : DISPLAY_LOGIC
     case (state)
         IDLE :        display_data <= {14'h0, sw_reg};
         WRITE:        display_data <= {14'h0, sw_reg};
-        READ_DISPLAY: display_data <= {8'h00, read_data};
+        READ_DISPLAY: display_data <= {8'h00, read_data_reg};
         default: display_data <= {14'h0, sw_reg};
     endcase
 end
