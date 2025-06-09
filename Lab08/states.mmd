@@ -1,0 +1,22 @@
+stateDiagram-v2
+    [*] --> POWER_DOWN
+    POWER_DOWN --> INITIALIZATION
+    INITIALIZATION --> PRECHARGE_INITIALIZATION: 13,297 cycles
+    PRECHARGE_INITIALIZATION --> AUTO_REFRESH_START: 2 cycles
+    AUTO_REFRESH_START --> AUTO_REFRESH_FINISH: 8 cycles
+    AUTO_REFRESH_FINISH --> MODE_REGISTER_SET: 8 cycles
+    MODE_REGISTER_SET --> IDLE: 8 cycles
+
+    IDLE --> AUTO_REFLESH: if refresh pending
+    AUTO_REFLESH --> IDLE: 8 cycles
+
+    IDLE --> ACTIVATE: on we_i || re_i
+    ACTIVATE --> WRITE: 2 cycles
+    ACTIVATE --> READ: 2 cycles
+
+    WRITE --> WRITE_ACK: 2 cycles
+    WRITE_ACK --> IDLE
+
+    READ --> READ_WB
+    READ_WB --> READ_WB: while latency not met
+    READ_WB --> IDLE: after latency

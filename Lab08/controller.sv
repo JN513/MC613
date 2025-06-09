@@ -79,7 +79,7 @@ logic write_operation;
 
 localparam MODE_REGISTER_MODE = 13'b0001000100000; //Latency=2, burst length=1, single access write operation
 
-always_ff @( posedge sys_clk ) begin
+always_ff @( posedge sys_clk or negedge sys_rst_n ) begin
     if(!sys_rst_n) begin
         current_state    <= POWER_DOWN;
         state_after_wait <= POWER_DOWN;
@@ -173,7 +173,7 @@ always_ff @( posedge sys_clk ) begin
 end
 
 
-always_ff @(posedge sys_clk) begin
+always_ff @(posedge sys_clk or negedge sys_rst_n) begin
     if(!sys_rst_n) begin
         busy_o      <= 0;
         ack_o       <= 0;
@@ -202,7 +202,7 @@ always_ff @(posedge sys_clk) begin
                 dram_udqm  <= 1; // Data mask signals low
             end
             WAIT_MEMORY: begin
-
+                command <= NOP;
             end
 
             PRECHARGE_INITIALIZATION: begin
@@ -232,6 +232,7 @@ always_ff @(posedge sys_clk) begin
                 dram_dq_we <= 0;   // Data write enable low
                 dram_ldqm  <= 0;   // Load mode register low
                 dram_udqm  <= 0;   // Data mask signals low
+                dram_dq_out     <= data_i[15:0]; // Output data to SDRAM
                 write_operation <= we_i;
             end
 
@@ -252,7 +253,6 @@ always_ff @(posedge sys_clk) begin
                 dram_addr[9:0] <= addr_i[9:0]; // Set cow address
                 dram_addr[10]  <= 1; // Auto precharge
                 dram_dq_we     <= 1; // Data write enable high
-                dram_dq_out    <= data_i[15:0]; // Output data to SDRAM
                 dram_ldqm      <= 0; // Load mode register low
                 dram_udqm      <= 0; // Data mask signals low
             end
@@ -264,6 +264,7 @@ always_ff @(posedge sys_clk) begin
             end
 
             READ: begin
+                dram_dq_we     <= 0;
                 command        <= RD; // Read command
                 dram_addr[9:0] <= addr_i[9:0]; // Set cow address
                 dram_addr[10]  <= 1; // Auto precharge

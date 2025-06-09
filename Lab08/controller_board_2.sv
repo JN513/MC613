@@ -127,7 +127,8 @@ always_ff @( posedge sys_clk ) begin
                 if(counter < 10) begin
                     counter <= counter + 1;
                 end else begin
-                    counter <= 0;
+                    write_data <= 0;
+                    counter    <= 0;
                     state <= READ;
                 end
             end
@@ -153,7 +154,7 @@ always_ff @( posedge sys_clk ) begin
                     fail <= 1;
                     fail_addr <= counter_addr;
                 end
-                if(counter_addr < 255) begin
+                if(counter_addr < 0) begin
                     counter_addr <= counter_addr + 1;
                     addr <= addr + 1;
                     write_data <= write_data + 1;
@@ -178,8 +179,6 @@ pll pll1 (
 );
 
 Sdram_Ctrl #(
-    .DATA_WIDTH       (32),
-    .ADDR_WIDTH       (32),
     .MEM_SIZE         (1024 * 1024 * 64), // 64MB
     .SDRAM_CLK_FREQ   (133_000_000), // 100 MHz
     .SDRAM_WORD_SIZE  (16), // 16 bits per word
@@ -220,19 +219,19 @@ assign dram_dq_in = DRAM_DQ;
 assign DRAM_DQ    = (dram_dq_we) ? dram_dq_out : 16'bz;
 
 bin2hex U1 (
-    .bin (write_data[3:0]),
+    .bin (read_data[3:0]),
     .hex (HEX0)
 );
 bin2hex U2 (
-    .bin (write_data[7:4]),
+    .bin (read_data[7:4]),
     .hex (HEX1)
 );
 bin2hex U3 (
-    .bin (write_data[11:8]),
+    .bin (read_data[11:8]),
     .hex (HEX2)
 );
 bin2hex U4 (
-    .bin (write_data[15:12]),
+    .bin (read_data[15:12]),
     .hex (HEX3)
 );
 bin2hex U5 (

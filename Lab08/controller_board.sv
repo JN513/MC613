@@ -46,7 +46,6 @@ initial begin
     state      = INIT;
     write_data = 32'h00000000;
     addr       = 0;
-	rst_n      = 1;
     write      = 0;
     read       = 0;
 end
@@ -60,24 +59,27 @@ typedef enum logic [3:0] {
     READ_DISPLAY,
     WRITE,
     WRITE_OPERATION,
+    WRITE_ACK,
     DELAY_2
 } state_t;
 
 state_t state;
 
-always_ff @( posedge sys_clk ) begin
-    read  <= 0;
-    write <= 0;
-
+always_ff @( posedge sys_clk or negedge rst_n) begin
     if(!rst_n) begin
         leds_reg   <= 0;
         state      <= INIT;
         addr       <= 0;
         write_data <= 32'h00000000;
+        read       <= 0;
+        write      <= 0;
     end else begin
         case (state)
             INIT: begin
-                state <= DELAY;
+                read    <= 0;
+                write   <= 0;
+                state   <= DELAY;
+                counter <= 0;
             end
 
             DELAY: begin
@@ -90,13 +92,14 @@ always_ff @( posedge sys_clk ) begin
             end
 
             IDLE: begin
+                read      <= 0;
+                write     <= 0;
+                addr      <= {6'h0, sw_reg};
                 leds_reg  <= 10'h001;
                 if(write_btn) begin
-                    addr  <= {6'h0, sw_reg};
                     state <= WRITE;
                 end else if(read_btn) begin
                     state <= READ;
-                    addr  <= {6'h0, sw_reg};
                 end
             end
 
@@ -108,8 +111,10 @@ always_ff @( posedge sys_clk ) begin
             end
 
             READ_WB: begin
+                read <= 0;
                 if(ack) begin
                     state   <= READ_DISPLAY;
+                    read_data_reg <= read_data;
                     counter <= 0;
                 end
             end
@@ -136,6 +141,13 @@ always_ff @( posedge sys_clk ) begin
                 leds_reg  <= 10'h008;
                 if(!busy) begin
                     write <= 1;
+                    state <= WRITE_ACK;
+                end
+            end
+
+            WRITE_ACK: begin
+                write <= 0;
+                if(ack) begin
                     state <= DELAY_2;
                 end
             end
@@ -154,7 +166,7 @@ end
 
 pll pll1 (
     .refclk   (CLOCK_50), // refclk.clk
-    .rst      (~rst_n),   // reset.reset
+    .rst      (~auto_rst),   // reset.reset
     .outclk_0 (sys_clk)   // outclk0.clk
 );
 
@@ -202,7 +214,7 @@ always_ff @( posedge sys_clk ) begin : DISPLAY_LOGIC
     case (state)
         IDLE :        display_data <= {14'h0, sw_reg};
         WRITE:        display_data <= {14'h0, sw_reg};
-        READ_DISPLAY: display_data <= {8'h00, read_data};
+        READ_DISPLAY: display_data <= {8'h00, read_data_reg};
         default: display_data <= {14'h0, sw_reg};
     endcase
 end
@@ -260,7 +272,6 @@ logic [2:0] posedge_reg1, posedge_reg2, posedge_reg3, posedge_reg4;
 
 initial begin
     stt          = 0;
-	auto_rst     = 0;
     posedge_reg1 = 0;
     posedge_reg2 = 0;
     posedge_reg3 = 0;
