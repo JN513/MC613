@@ -44,7 +44,7 @@ assign LEDR = leds_reg;
 
 initial begin
     state      = INIT;
-    write_data = 32'h00000000;
+    write_data = 0;
     addr       = 0;
     write      = 0;
     read       = 0;
@@ -58,6 +58,7 @@ typedef enum logic [3:0] {
     READ_WB,
     READ_DISPLAY,
     WRITE,
+    WRITE_WAIT,
     WRITE_OPERATION,
     WRITE_ACK,
     DELAY_2
@@ -70,7 +71,7 @@ always_ff @( posedge sys_clk or negedge rst_n) begin
         leds_reg   <= 0;
         state      <= INIT;
         addr       <= 0;
-        write_data <= 32'h00000000;
+        write_data <= 0;
         read       <= 0;
         write      <= 0;
     end else begin
@@ -113,9 +114,9 @@ always_ff @( posedge sys_clk or negedge rst_n) begin
             READ_WB: begin
                 read <= 0;
                 if(ack) begin
-                    state   <= READ_DISPLAY;
+                    state         <= READ_DISPLAY;
                     read_data_reg <= read_data;
-                    counter <= 0;
+                    counter       <= 0;
                 end
             end
 
@@ -133,8 +134,12 @@ always_ff @( posedge sys_clk or negedge rst_n) begin
                 leds_reg  <= 10'h004;
                 if(write_btn) begin
                     write_data <= {6'h0, sw_reg};
-                    state      <= WRITE_OPERATION;
+                    state      <= WRITE_WAIT;
                 end
+            end
+
+            WRITE_WAIT: begin
+                state <= WRITE_OPERATION;
             end
 
             WRITE_OPERATION: begin
@@ -165,9 +170,9 @@ always_ff @( posedge sys_clk or negedge rst_n) begin
 end
 
 pll pll1 (
-    .refclk   (CLOCK_50), // refclk.clk
-    .rst      (~auto_rst),   // reset.reset
-    .outclk_0 (sys_clk)   // outclk0.clk
+    .refclk   (CLOCK_50),  // refclk.clk
+    .rst      (~auto_rst), // reset.reset
+    .outclk_0 (sys_clk)    // outclk0.clk
 );
 
 Sdram_Ctrl #(
@@ -214,7 +219,7 @@ always_ff @( posedge sys_clk ) begin : DISPLAY_LOGIC
     case (state)
         IDLE :        display_data <= {14'h0, sw_reg};
         WRITE:        display_data <= {14'h0, sw_reg};
-        READ_DISPLAY: display_data <= {8'h00, read_data_reg};
+        READ_DISPLAY: display_data <= {8'h00, read_data};
         default: display_data <= {14'h0, sw_reg};
     endcase
 end

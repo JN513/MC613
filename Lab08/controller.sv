@@ -173,7 +173,7 @@ always_ff @( posedge sys_clk or negedge sys_rst_n ) begin
 end
 
 
-always_ff @(posedge sys_clk or negedge sys_rst_n) begin
+always_ff @(negedge sys_clk or negedge sys_rst_n) begin
     if(!sys_rst_n) begin
         busy_o      <= 0;
         ack_o       <= 0;
@@ -223,7 +223,7 @@ always_ff @(posedge sys_clk or negedge sys_rst_n) begin
                 dram_ba         <= 2'b00;
                 busy_o          <= 1;
 
-                latency <= (MODE_REGISTER_MODE[6:4]) ? 2'b10 : 2'b11;
+                latency <= ((MODE_REGISTER_MODE[6:4]) ? 2'b10 : 2'b11) + 1;
             end
 
             IDLE: begin
