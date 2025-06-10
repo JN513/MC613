@@ -1,0 +1,21 @@
+{
+  "signal": [
+    { "name": "sys_clk",      "wave": "P...................." },
+    { "name": "state",        "wave": "x.3.64.35.36.43.54.3x", "data": [
+        "IDLE", "ACT", "WAIT", "WR", "WAIT", "ACK", 
+        "IDLE", "ACT", "WAIT", "RD", "WAIT", "WB"
+    ] },
+    { "name": "command",      "wave": "x.3.67.47..6.75.74..x", "data": [
+        "NOP", "ACT", "NOP", "WRT", "NOP", "NOP", 
+        "ACT", "NOP", "RD", "NOP", "NOP"
+    ] },
+    { "name": "dram_dq_we",   "wave": "0......1..0.........." },
+    { "name": "dram_dq_out",  "wave": "x......=..x..........", "data": ["data_out"] },
+    { "name": "dram_dq_in",   "wave": "x.................=.x", "data": ["data_in"] },
+    { "name": "dram_addr",    "wave": "x...=..=..x..=..=..x.", "data": [
+        "row", "col", "row", "col"
+    ] },
+    { "name": "dram_ldqm",    "wave": "0...................." },
+    { "name": "dram_udqm",    "wave": "0...................." }
+  ]
+}
